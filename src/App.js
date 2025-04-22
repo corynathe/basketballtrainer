@@ -130,7 +130,7 @@ function App() {
     <Container className="text-center py-4">
       <h1 className="mb-4" style={{ color: 'black' }}>
         <FontAwesomeIcon icon={faBasketballBall} style={{ color: '#d65a31' }} className="me-2" />
-        Operation Buckets Jr.
+        Basketball Trainer
         <FontAwesomeIcon icon={faBasketballBall} style={{ color: '#d65a31' }} className="ms-2" />
       </h1>
 
