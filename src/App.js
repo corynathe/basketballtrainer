@@ -27,10 +27,16 @@ function App() {
   const [currentAction, setCurrentAction] = useState('');
   const [stats, setStats] = useState({ total: 0, makes: 0, actions: {} });
   const [showButtons, setShowButtons] = useState(false);
+  const [timer, setTimer] = useState(0);
   const recognitionRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const countdownRef = useRef(null);
 
   const handleManualStat = useCallback((made) => {
     recognitionRef.current?.stop();
+    clearTimeout(timeoutRef.current);
+    clearInterval(countdownRef.current);
+    setTimer(0);
     updateStats(currentAction, made);
     setShowButtons(false);
     setTimeout(() => {
@@ -79,14 +85,27 @@ function App() {
       speak(start);
       setTimeout(() => {
         speak(action);
-        setTimeout(() => {
-          speak('Make or miss?');
-          setShowButtons(true);
-          recognitionRef.current?.start();
-        }, 4500);
+        setShowButtons(true);
+        setTimer(10);
+        recognitionRef.current?.start();
+
+        // Countdown timer
+        countdownRef.current = setInterval(() => {
+          setTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(countdownRef.current);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        timeoutRef.current = setTimeout(() => {
+          handleManualStat(false);
+        }, 10000);
       }, 2500);
     }, 3000);
-  }, []);
+  }, [handleManualStat]);
 
   const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -120,7 +139,9 @@ function App() {
   const handlePause = () => {
     setIsRunning(false);
     recognitionRef.current?.stop();
-    clearTimeout();
+    clearTimeout(timeoutRef.current);
+    clearInterval(countdownRef.current);
+    setTimer(0);
   };
 
   const formatStatsLine = (action, data) =>
@@ -130,7 +151,7 @@ function App() {
     <Container className="text-center py-4">
       <h1 className="mb-4" style={{ color: 'black' }}>
         <FontAwesomeIcon icon={faBasketballBall} style={{ color: '#d65a31' }} className="me-2" />
-        Basketball Trainer
+        Operation Buckets Jr.
         <FontAwesomeIcon icon={faBasketballBall} style={{ color: '#d65a31' }} className="ms-2" />
       </h1>
 
@@ -161,10 +182,15 @@ function App() {
           <div className="text-danger my-2" style={{ fontSize: '1.3rem' }}>🎤 Waiting for your action...</div>
         )}
         {showButtons && (
-          <div className="d-flex justify-content-center gap-3 mt-2">
-            <Button variant="outline-success" size="lg" onClick={() => handleManualStat(true)}>Make</Button>
-            <Button variant="outline-danger" size="lg" onClick={() => handleManualStat(false)}>Miss</Button>
-          </div>
+          <>
+            <div className="d-flex justify-content-center gap-3 mt-2">
+              <Button variant="outline-success" size="lg" onClick={() => handleManualStat(true)}>Make</Button>
+              <Button variant="outline-danger" size="lg" onClick={() => handleManualStat(false)}>Miss</Button>
+            </div>
+            <div className="mt-2" style={{ fontSize: '1.3rem' }}>
+              Listening... <strong>{timer}</strong> seconds left
+            </div>
+          </>
         )}
       </div>
 
