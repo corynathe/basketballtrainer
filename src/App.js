@@ -80,37 +80,42 @@ function App() {
     setCurrentStartType(start);
     setCurrentAction(action);
 
-    speak(spot);
-    setTimeout(() => {
-      speak(start);
+    speak(spot, () => {
       setTimeout(() => {
-        speak(action);
-        setShowButtons(true);
-        setTimer(10);
-        recognitionRef.current?.start();
+        speak(start, () => {
+          setTimeout(() => {
+            speak(action, () => {
+              setShowButtons(true);
+              setTimer(10);
+              recognitionRef.current?.start();
 
-        // Countdown timer
-        countdownRef.current = setInterval(() => {
-          setTimer((prev) => {
-            if (prev <= 1) {
-              clearInterval(countdownRef.current);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+              countdownRef.current = setInterval(() => {
+                setTimer((prev) => {
+                  if (prev <= 1) {
+                    clearInterval(countdownRef.current);
+                    return 0;
+                  }
+                  return prev - 1;
+                });
+              }, 1000);
 
-        timeoutRef.current = setTimeout(() => {
-          handleManualStat(false);
-        }, 10000);
-      }, 2500);
-    }, 3000);
+              timeoutRef.current = setTimeout(() => {
+                handleManualStat(false);
+              }, 10000);
+            });
+          }, 2500);
+        });
+      }, 3000);
+    });
   }, [handleManualStat]);
 
   const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-  const speak = (text) => {
+  const speak = (text, onEnd) => {
     const utterance = new SpeechSynthesisUtterance(text);
+    if (onEnd) {
+      utterance.onend = onEnd;
+    }
     speechSynthesis.speak(utterance);
   };
 
