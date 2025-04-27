@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/basketballtrainer/static/css/main.722eafe8.css",
-    "main.js": "/basketballtrainer/static/js/main.687181e9.js",
+    "main.js": "/basketballtrainer/static/js/main.60e01a8f.js",
     "static/js/453.3882b468.chunk.js": "/basketballtrainer/static/js/453.3882b468.chunk.js",
     "index.html": "/basketballtrainer/index.html",
     "main.722eafe8.css.map": "/basketballtrainer/static/css/main.722eafe8.css.map",
-    "main.687181e9.js.map": "/basketballtrainer/static/js/main.687181e9.js.map",
+    "main.60e01a8f.js.map": "/basketballtrainer/static/js/main.60e01a8f.js.map",
     "453.3882b468.chunk.js.map": "/basketballtrainer/static/js/453.3882b468.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.722eafe8.css",
-    "static/js/main.687181e9.js"
+    "static/js/main.60e01a8f.js"
   ]
 }
